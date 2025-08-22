@@ -22,4 +22,6 @@
 - Authorization server  : It receives requests from the client for access tokens and issues them upon successful authentication and consent by the resource owner.
 - Resource server       : A server that protects the user's resources and receives access request from the client and validates an Access token from the client and returns the appropriate resources to it.
   
-  
+**OAuth 2.0 Scopes:**
+- Scopes are important concepts in OAuth 2.0.
+- They are used to specify exactly the reason for which access to resources may be granted.
