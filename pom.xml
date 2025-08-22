@@ -51,4 +51,7 @@
 		</plugins>
 	</build>
 
+    <modules>
+    <module>AuthorizationServer</module>
+    </modules>
 </project>
