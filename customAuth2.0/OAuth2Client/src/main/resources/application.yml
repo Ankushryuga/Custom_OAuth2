@@ -1,0 +1,22 @@
+server:
+  port: 8091
+
+spring:
+  security:
+    oauth2:
+      client:
+        registration:
+          client-app:
+            client-id: client-app
+            client-secret: secret
+            authorization-grant-type: authorization_code
+            redirect-uri: "{baseUrl/login/oauth2/code/{registrationId}"
+            scope: openid, profile, email
+            provider: custom-provider
+        provider:
+          custom-provider:
+            authorization-uri: http://localhost:9000/oauth2/authorize
+            token-uri: http://localhost:9000/oauth2/token
+            user-info-uri: http://localhost:9000/userinfo
+            user-name-attribute: sub
+            jwk-set-uri: http://localhost:9000/oauth2/jwks
