@@ -1,0 +1,21 @@
+server:
+  port: 9000
+
+spring:
+  datasource:
+    url: "jdbc:postgresql://localhost:5432/oauth_db"
+    username: "postgres"
+    password: "1234"
+  flyway:
+#    enabled: false
+    locations: classpath:db/migration
+  redis:
+    host: "localhost"
+    port: "6379"
+auth:
+  token:
+    access-min: 10
+    refresh-days: 15
+
+app:
+  issuer: "http://localhost:9000"
