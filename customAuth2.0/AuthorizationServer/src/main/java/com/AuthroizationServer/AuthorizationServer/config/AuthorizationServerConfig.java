@@ -21,5 +21,5 @@ public class AuthorizationServerConfig {
                 .oidc(Customizer.withDefaults());
 
         return http.build();
-            }
+    }
 }
