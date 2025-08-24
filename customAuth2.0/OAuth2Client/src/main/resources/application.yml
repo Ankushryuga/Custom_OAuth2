@@ -1,5 +1,7 @@
+# Fixed OAuth2Client/src/main/resources/application.yml
 server:
   port: 8091
+
 spring:
   security:
     oauth2:
@@ -10,9 +12,15 @@ spring:
             client-secret: client-secret
             authorization-grant-type: authorization_code
             redirect-uri: "{baseUrl}/login/oauth2/code/{registrationId}"
-            scope: openid, profile, orders.read
+            scope: openid,profile,orders.read,api.read
             client-name: Test Client App
 
         provider:
           client-app:
-            issuer-uri: http://localhost:9000   # ? Discovery auto-config
+            issuer-uri: http://localhost:9000
+
+# Optional: Enable debug logging
+logging:
+  level:
+    org.springframework.security: DEBUG
+    org.springframework.security.oauth2: DEBUG

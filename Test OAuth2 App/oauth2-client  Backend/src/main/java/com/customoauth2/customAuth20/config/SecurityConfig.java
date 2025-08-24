@@ -25,6 +25,9 @@ import java.util.Arrays;
 @EnableWebSecurity
 public class SecurityConfig {
 
+    @org.springframework.beans.factory.annotation.Value("${frontend.redirect-uri:http://localhost:3000}")
+    private String frontendRedirectUri;
+
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
@@ -36,11 +39,13 @@ public class SecurityConfig {
                 )
                 .oauth2Login(oauth2 -> oauth2
                         .loginPage("/api/auth/login") // triggers OAuth2 login
-                        .defaultSuccessUrl("http://localhost:3000", true)
+                        // Use the configured front‑end redirect URI as the success target
+                        .defaultSuccessUrl(frontendRedirectUri, true)
                 )
                 .logout(logout -> logout
                         .logoutUrl("/api/auth/logout")
-                        .logoutSuccessUrl("http://localhost:3000")
+                        // Redirect back to the front‑end after logging out
+                        .logoutSuccessUrl(frontendRedirectUri)
                         .invalidateHttpSession(true)
                         .deleteCookies("JSESSIONID")
                 );

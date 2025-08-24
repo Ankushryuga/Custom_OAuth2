@@ -29,19 +29,54 @@ public class ClientConfig {
 
     @Bean
     public RegisteredClientRepository registeredClientRepository() {
-        List<RegisteredClient> registeredClients = clientRepository.findAll().stream()
-                .map(client -> RegisteredClient.withId(client.getId().toString())
-                        .clientId(client.getClientId())
-                        .clientSecret(passwordEncoder.encode(client.getClientSecret()))
-                        .redirectUri(client.getRedirectUri())
-                        .authorizationGrantType(AuthorizationGrantType.AUTHORIZATION_CODE)
-                        .authorizationGrantType(AuthorizationGrantType.REFRESH_TOKEN)
-                        .authorizationGrantType(AuthorizationGrantType.CLIENT_CREDENTIALS)
-                        .scope(OidcScopes.OPENID)
-                        .scope("profile")
-                        .build()
-                )
-                .toList();
+        // Build a RegisteredClient for each row in the clients table.  We parse the comma‑separated
+        // redirect URIs, scopes and grant types to allow per‑client customisation.  If no scopes
+        // are provided we fall back to "openid" and "profile".
+        List<RegisteredClient> registeredClients = clientRepository.findAll().stream().map(client -> {
+            RegisteredClient.Builder builder = RegisteredClient.withId(client.getId().toString())
+                    .clientId(client.getClientId())
+                    .clientSecret(passwordEncoder.encode(client.getClientSecret()));
+
+            // Configure redirect URIs (may be comma‑separated in the DB)
+            String redirectUriStr = client.getRedirectUri();
+            if (redirectUriStr != null && !redirectUriStr.isBlank()) {
+                for (String uri : redirectUriStr.split(",")) {
+                    builder.redirectUri(uri.trim());
+                }
+            }
+
+            // Configure supported authorization grant types
+            String grantTypes = client.getGrantTypes();
+            if (grantTypes != null && !grantTypes.isBlank()) {
+                for (String grantType : grantTypes.split(",")) {
+                    String trimmed = grantType.trim();
+                    if (!trimmed.isEmpty()) {
+                        builder.authorizationGrantType(new AuthorizationGrantType(trimmed));
+                    }
+                }
+            } else {
+                // Default grant types if none are specified
+                builder.authorizationGrantType(AuthorizationGrantType.AUTHORIZATION_CODE)
+                       .authorizationGrantType(AuthorizationGrantType.REFRESH_TOKEN)
+                       .authorizationGrantType(AuthorizationGrantType.CLIENT_CREDENTIALS);
+            }
+
+            // Configure scopes
+            String scopes = client.getScopes();
+            if (scopes != null && !scopes.isBlank()) {
+                for (String scope : scopes.split(",")) {
+                    String trimmed = scope.trim();
+                    if (!trimmed.isEmpty()) {
+                        builder.scope(trimmed);
+                    }
+                }
+            } else {
+                // Always include the mandatory OpenID scope when no scopes are specified
+                builder.scope(OidcScopes.OPENID).scope("profile");
+            }
+
+            return builder.build();
+        }).toList();
 
         return new InMemoryRegisteredClientRepository(registeredClients);
     }

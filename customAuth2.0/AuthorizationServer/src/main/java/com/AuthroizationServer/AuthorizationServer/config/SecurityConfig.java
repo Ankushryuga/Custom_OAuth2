@@ -31,13 +31,27 @@ public class SecurityConfig {
     }
 
     @Bean
+    @org.springframework.core.annotation.Order(2)
     SecurityFilterChain appSecurity(HttpSecurity http) throws Exception {
+        // This filter chain applies to all requests except the OAuth2 endpoints defined in the
+        // AuthorizationServerConfig above.  Without setting a securityMatcher here,
+        // Spring considers it as matching any request, which conflicts with the auth server chain.
+        http.securityMatcher(new org.springframework.security.web.util.matcher.NegatedRequestMatcher(
+                new org.springframework.security.web.util.matcher.OrRequestMatcher(
+                        new org.springframework.security.web.util.matcher.AntPathRequestMatcher("/oauth2/**"),
+                        new org.springframework.security.web.util.matcher.AntPathRequestMatcher("/.well-known/**")
+                )));
+
         http
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/.well-known/**", "/login").permitAll()
+                        .requestMatchers("/login", "/error").permitAll()
                         .anyRequest().authenticated()
                 )
                 .formLogin(Customizer.withDefaults())
+                .logout(logout -> logout
+                        .logoutSuccessUrl("/login?logout")
+                        .permitAll()
+                )
                 .authenticationProvider(authenticationProvider());
 
         return http.build();
