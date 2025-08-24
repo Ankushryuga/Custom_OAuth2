@@ -9,6 +9,9 @@ services:
     ports:
       - "5432:5432"
     volumes:
-      - pgdata:var/lib/postgresql/data
+      # Mount the named volume into the correct container directory.  The original
+      # configuration omitted the leading slash which caused Docker to create a relative
+      # directory instead of using the container's data directory.
+      - pgdata:/var/lib/postgresql/data
 volumes:
   pgdata:

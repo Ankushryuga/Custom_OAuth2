@@ -21,6 +21,20 @@ public class Client {
     @Column(name="redirect_uri", nullable = false)
     private String redirectUri;
 
+    /**
+     * Comma‑separated list of OAuth2 scopes that this client is allowed to request.  This
+     * corresponds to the {@code scopes} column in the {@code clients} table created by Flyway.
+     */
+    @Column(name = "scopes")
+    private String scopes;
+
+    /**
+     * Comma‑separated list of authorization grant types (e.g. {@code authorization_code},
+     * {@code client_credentials}, {@code refresh_token}) configured for this client.
+     */
+    @Column(name = "grant_types")
+    private String grantTypes;
+
 
     // Getters and setters
     public Long getId() { return id; }
@@ -34,5 +48,11 @@ public class Client {
 
     public String getRedirectUri() { return redirectUri; }
     public void setRedirectUri(String redirectUri) { this.redirectUri = redirectUri; }
+
+    public String getScopes() { return scopes; }
+    public void setScopes(String scopes) { this.scopes = scopes; }
+
+    public String getGrantTypes() { return grantTypes; }
+    public void setGrantTypes(String grantTypes) { this.grantTypes = grantTypes; }
 
 }

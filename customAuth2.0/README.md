@@ -9,7 +9,7 @@
 ## Services
 - Authorization Server: http://localhost:9000
 - Resource Server:     http://localhost:8082
-- Client App:          http://localhost:8081
+- Client App:          http://localhost:8091
 
 ## Start Postgres
 docker compose up -d

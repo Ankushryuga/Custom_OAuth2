@@ -43,11 +43,19 @@
 			<artifactId>spring-boot-starter-web</artifactId>
 		</dependency>
 
-		<dependency>
-			<groupId>com.mysql</groupId>
-			<artifactId>mysql-connector-j</artifactId>
-			<scope>runtime</scope>
-		</dependency>
+        <!-- Use PostgreSQL instead of MySQL.  The MySQL runtime connector was left
+             in the project but the datasource is configured for Postgres.  Removing
+             this dependency prevents Spring Boot from attempting to load a MySQL
+             driver at runtime. -->
+
+        <!-- Flyway core provides the classes required by Spring Boot to execute
+             database migrations on startup.  Without this dependency only the
+             vendor‑specific extension was present, causing the application to
+             fail at runtime. -->
+        <dependency>
+            <groupId>org.flywaydb</groupId>
+            <artifactId>flyway-core</artifactId>
+        </dependency>
 		<dependency>
 			<groupId>org.projectlombok</groupId>
 			<artifactId>lombok</artifactId>
