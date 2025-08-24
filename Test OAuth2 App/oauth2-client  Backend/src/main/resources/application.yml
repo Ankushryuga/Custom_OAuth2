@@ -1,3 +1,4 @@
+# Fixed Test OAuth2 App/oauth2-client Backend/src/main/resources/application.yml
 server:
   port: 3001
 
@@ -6,24 +7,27 @@ spring:
     oauth2:
       client:
         registration:
-          client-app:                  # ? must match the URL you call
+          client-app:
             client-id: client-app
             client-secret: client-secret
             authorization-grant-type: authorization_code
             redirect-uri: "{baseUrl}/login/oauth2/code/{registrationId}"
-            scope: openid, profile, orders.read
+            scope: openid,profile,orders.read,api.read
+            client-name: Test Client App
+
         provider:
-          client-app:                  # ? same id
-            authorization-uri: http://localhost:9000/oauth2/authorize
-            token-uri: http://localhost:9000/oauth2/token
-            user-info-uri: http://localhost:9000/userinfo
-            jwk-set-uri: http://localhost:9000/oauth2/jwks
-            user-name-attribute: sub
+          client-app:
             issuer-uri: http://localhost:9000
 
-# CORS (for frontend React app)
+# CORS configuration
 cors:
   allowed-origins: http://localhost:3000
   allowed-methods: GET,POST,PUT,DELETE,OPTIONS
   allowed-headers: "*"
   allow-credentials: true
+
+# Enable debug logging
+logging:
+  level:
+    org.springframework.security: DEBUG
+    org.springframework.security.oauth2: DEBUG
