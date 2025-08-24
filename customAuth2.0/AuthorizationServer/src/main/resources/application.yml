@@ -17,5 +17,6 @@ auth:
     access-min: 10
     refresh-days: 15
 
+
 app:
   issuer: "http://localhost:9000"
