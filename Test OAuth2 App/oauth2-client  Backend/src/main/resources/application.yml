@@ -1,0 +1,29 @@
+server:
+  port: 3001
+
+spring:
+  security:
+    oauth2:
+      client:
+        registration:
+          client-app:                  # ? must match the URL you call
+            client-id: client-app
+            client-secret: client-secret
+            authorization-grant-type: authorization_code
+            redirect-uri: "{baseUrl}/login/oauth2/code/{registrationId}"
+            scope: openid, profile, orders.read
+        provider:
+          client-app:                  # ? same id
+            authorization-uri: http://localhost:9000/oauth2/authorize
+            token-uri: http://localhost:9000/oauth2/token
+            user-info-uri: http://localhost:9000/userinfo
+            jwk-set-uri: http://localhost:9000/oauth2/jwks
+            user-name-attribute: sub
+            issuer-uri: http://localhost:9000
+
+# CORS (for frontend React app)
+cors:
+  allowed-origins: http://localhost:3000
+  allowed-methods: GET,POST,PUT,DELETE,OPTIONS
+  allowed-headers: "*"
+  allow-credentials: true

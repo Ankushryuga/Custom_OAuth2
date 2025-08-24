@@ -25,3 +25,24 @@
 **OAuth 2.0 Scopes:**
 - Scopes are important concepts in OAuth 2.0.
 - They are used to specify exactly the reason for which access to resources may be granted.
+
+```
+┌─────────────────┐    ┌──────────────────┐    ┌─────────────────┐
+│   React App     │    │  Spring Boot     │    │ Authorization   │
+│  (Port 3000)    │◄──►│   Backend        │◄──►│    Server       │
+│                 │    │  (Port 3001)     │    │  (Port 9000)    │
+└─────────────────┘    └──────────────────┘    └─────────────────┘
+                                │                         │
+                                │                         │
+                                ▼                         ▼
+                       ┌──────────────────┐    ┌─────────────────┐
+                       │ Resource Server  │    │   PostgreSQL    │
+                       │  (Port 8082)     │    │  (Port 5432)    │
+                       └──────────────────┘    └─────────────────┘
+```
+**Flow Description**
+- User Authentication: React → Backend → Authorization Server
+- Token Exchange: Authorization Server issues JWT tokens
+- Protected Resources: Backend uses tokens to access Resource Server
+- User Experience: Seamless single sign-on experience
+
