@@ -1,0 +1,34 @@
+#server:
+#  port: 8081
+#spring:
+#  data:
+#    redis:
+#      host: redis
+#      port: 6379
+# Another***
+#server:
+#  port: 8081
+#
+#spring:
+#  security:
+#    oauth2:
+#      resourceserver:
+#        jwt:
+#          jwk-set-uri: ${JWK_SET_URI:http://localhost:9000/oauth2/jwks}
+#
+#logging.level.org.springframework.security: INFO
+
+server:
+  port: 8081
+
+#spring:
+#  security:
+#    oauth2:
+#      resourceserver:
+#        jwt:
+#          issuer-uri: http://localhost:9000/tenants/acme        # Use issuer discovery so RS fetches the correct JWKS and validates issuer/exp/etc.
+
+logging:
+  level:
+    org.springframework.security: INFO
+
