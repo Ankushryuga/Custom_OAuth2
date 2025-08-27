@@ -12,3 +12,6 @@
 2. Start the Resource Server.
 3. Start Client
 4. login with `http://localhost:8080`
+
+
+NOTE: I have added a dummy credential : `username: user`, and `password: password`.
