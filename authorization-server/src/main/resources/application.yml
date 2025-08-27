@@ -1,0 +1,26 @@
+server:
+  port: 9000
+
+spring:
+  datasource:
+    url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://localhost:5432/oauth_db}
+    username: ${SPRING_DATASOURCE_USERNAME:postgres}
+    password: ${SPRING_DATASOURCE_PASSWORD:1234}
+    driver-class-name: org.postgresql.Driver
+  flyway:
+    enabled: true
+    locations: classpath:db/migration
+  data:
+    redis:
+      host: ${REDIS_HOST:localhost}
+      port: ${REDIS_PORT:6379}
+  session:
+    store-type: redis
+    redis:
+      namespace: authserver:sessions
+  security:
+    oauth2:
+      authorizationserver:
+        issuer: http://localhost:9000
+
+logging.level.org.springframework.security: INFO

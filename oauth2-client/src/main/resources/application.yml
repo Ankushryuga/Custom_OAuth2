@@ -1,0 +1,64 @@
+#server:
+#  port: 8080
+#  servlet:
+#    session:
+#      cookie:
+#        name: CLIENTSESSION
+#        same-site: LAX
+#        secure: false
+#        path: /
+#
+#spring:
+#  security:
+#    oauth2:
+#      client:
+#        provider:
+#          generic:
+#            issuer-uri: http://localhost:9000
+#        registration:
+#          generic:
+#            client-id: web-pkce
+#            client-authentication-method: none
+#            authorization-grant-type: authorization_code
+#            redirect-uri: "http://localhost:8080/login/oauth2/code/generic"
+#            scope:
+#              - openid
+#              - profile
+#              - email
+
+server:
+  port: 8080
+  servlet:
+    session:
+      cookie:
+        name: CLIENTSESSION
+        same-site: LAX
+        secure: false
+        path: /
+
+spring:
+  security:
+    oauth2:
+      client:
+        provider:
+          generic:
+            issuer-uri: http://localhost:9000
+        registration:
+          generic:
+            client-id: web-pkce
+            client-authentication-method: none
+            authorization-grant-type: authorization_code
+            redirect-uri: "http://localhost:8080/login/oauth2/code/generic"
+            scope:
+              - openid
+              - profile
+              - email
+
+app:
+  resource:
+    base-uri: http://localhost:8081
+
+logging:
+  level:
+    org.springframework.security: INFO
+    org.springframework.security.oauth2: INFO
