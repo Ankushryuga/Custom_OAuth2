@@ -1,19 +1,14 @@
-# Custom OAuth2.0 — Stable, One-Command Project (Postgres + Redis in Docker)
+<h3 align="center"> Hi there 👋, thank you for visiting this repo</h3>
 
-**Run all services in one command:**
-```bash
-docker compose up -d --build
-```
-Open **http://localhost:8082**.
+<p align="center"> This repo is just POC of OAuth2.0 server using Java Spring Boot and will be using this OAuth2.0 for all of my application</p>
 
-### Features
-- Spring Authorization Server (PKCE public client only, multi-tenant claim/issuer)
-- Redis session store + token blacklist (revocation)
-- Resource Server validates via JWKS and checks blacklist
-- Client app (Thymeleaf) for login, calling API, and viewing claims
-- Auto-registered client: `client_id=web-pkce`
+<p align="center"> If you find this repo helpful, please give me a star </p>
 
-### Revoke a token
-```bash
-curl -X POST -u admin:admin123 -d "token=<ACCESS_TOKEN>" http://localhost:9000/oauth2/revoke
-```
+
+
+**Steps to Run**
+
+1. Start the Authorization Server (verify `http://localhost:9000/oauth2/jwks` loads).
+2. Start the Resource Server.
+3. Start Client
+4. login with `http://localhost:8080`
