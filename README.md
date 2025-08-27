@@ -14,4 +14,4 @@
 4. login with `http://localhost:8080`
 
 
-NOTE: I have added a dummy credential : `username: user`, and `password: password`.
+NOTE: I have added a dummy credential for development: `username: user`, and `password: password`.
