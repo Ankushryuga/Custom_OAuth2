@@ -4,7 +4,12 @@
 
 <p align="center"> If you find this repo helpful, please give me a star </p>
 
+**Minimum requirement to run this**
+1. JVM         -- installed
+2. MVN         -- installed
+3. postgreSQL  -- installed
 
+NOTE: Change the database information in `AuthorizationServer/resources/application.yml` file
 
 **Steps to Run**
 
