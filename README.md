@@ -15,3 +15,6 @@
 
 
 NOTE: I have added a dummy credential for development: `username: user`, and `password: password`.
+
+
+**Notice: Lots of improvement coming ahead**
