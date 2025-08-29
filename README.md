@@ -15,7 +15,7 @@ NOTE: Change the database information in `AuthorizationServer/resources/applicat
 
 1. Start the Authorization Server (verify `http://localhost:9000/oauth2/jwks` loads).
 2. Start the Resource Server.
-3. Start Client
+3. Start Client (Note: This is just dummy client for awareness).
 4. login with `http://localhost:8080`
 
 
