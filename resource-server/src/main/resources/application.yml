@@ -1,34 +1,24 @@
-#server:
-#  port: 8081
-#spring:
-#  data:
-#    redis:
-#      host: redis
-#      port: 6379
-# Another***
-#server:
-#  port: 8081
-#
-#spring:
-#  security:
-#    oauth2:
-#      resourceserver:
-#        jwt:
-#          jwk-set-uri: ${JWK_SET_URI:http://localhost:9000/oauth2/jwks}
-#
-#logging.level.org.springframework.security: INFO
-
 server:
-  port: 8081
+  port: 9090
 
-#spring:
-#  security:
-#    oauth2:
-#      resourceserver:
-#        jwt:
-#          issuer-uri: http://localhost:9000/tenants/acme        # Use issuer discovery so RS fetches the correct JWKS and validates issuer/exp/etc.
+spring:
+  redis:
+    host: localhost
+    port: 6379
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: http://localhost:9000
 
-logging:
-  level:
-    org.springframework.security: INFO
-
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+# authorization-server/src/main/resources/application.yml
+auth:
+  dcr:
+    # set a dev token to require on Authorization: Bearer <token>
+    initial-token: "dev-dcr-token-123"
+    require-initial-token: true

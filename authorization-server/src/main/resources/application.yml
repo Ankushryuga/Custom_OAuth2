@@ -1,26 +1,68 @@
+#server:
+#  port: 9000
+#
+#spring:
+#  datasource:
+#    url: jdbc:postgresql://localhost:5432/oauth_db
+#    username: postgres
+#    password: 1234
+#  flyway:
+#    locations: classpath:db/migration
+#  redis:
+#    host: localhost
+#    port: 6379
+#  security:
+#    oauth2:
+#      authorizationserver:
+#        issuer: http://localhost:9000
+#
+#management:
+#  endpoints:
+#    web:
+#      exposure:
+#        include: health,info
+#
+#auth:
+#  jwks:
+#    path: ./data/jwks.json
+#  dcr:
+#    initial-token: dev-dcr-token-123
+#    require-initial-token: true
+#
+#
+#logging:
+#  level:
+#    org.springframework.security: DEBUG
+#    org.springframework.security.oauth2: DEBUG
+#    org.springframework.jdbc.core: DEBUG
 server:
   port: 9000
 
 spring:
   datasource:
-    url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://localhost:5432/oauth_db}
-    username: ${SPRING_DATASOURCE_USERNAME:postgres}
-    password: ${SPRING_DATASOURCE_PASSWORD:1234}
-    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://localhost:5432/oauth_db
+    username: postgres
+    password: 1234
   flyway:
-    enabled: true
     locations: classpath:db/migration
-  data:
-    redis:
-      host: ${REDIS_HOST:localhost}
-      port: ${REDIS_PORT:6379}
-  session:
-    store-type: redis
-    redis:
-      namespace: authserver:sessions
-  security:
-    oauth2:
-      authorizationserver:
-        issuer: http://localhost:9000
+  redis:
+    host: localhost
+    port: 6379
 
-logging.level.org.springframework.security: INFO
+auth:
+  jwks:
+    path: ./data/jwks.json
+  token:
+    access-min: 10
+    refresh-days: 30
+
+  # 👇 Dynamic Client Registration config
+  dcr:
+    initial-token: dev-dcr-token-123   # token you'll pass in Authorization header
+    require-initial-token: true        # true = must include it, false = open registration
+
+logging:
+  level:
+    org.springframework.security: DEBUG
+    org.springframework.security.oauth2: DEBUG
+    org.springframework.jdbc.core: DEBUG

@@ -3,58 +3,25 @@ services:
     image: postgres:16
     environment:
       POSTGRES_DB: oauth_db
-      POSTGRES_USER: oauth
-      POSTGRES_PASSWORD: oauth
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: 1234
     ports: ["5432:5432"]
-    healthcheck: { test: ["CMD-SHELL","pg_isready -U oauth -d oauth_db"], interval: 5s, timeout: 5s, retries: 20 }
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+    volumes:
+      - pgdata:/var/lib/postgresql/data
 
   redis:
     image: redis:7
     ports: ["6379:6379"]
-    healthcheck: { test: ["CMD","redis-cli","ping"], interval: 5s, timeout: 3s, retries: 20 }
-
-  auth-server:
-    build: { context: ., dockerfile: authorization-server/Dockerfile }
-    environment:
-      OAUTH_ISSUER_URI: http://auth-server:9000
-      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/oauth_db
-      SPRING_DATASOURCE_USERNAME: oauth
-      SPRING_DATASOURCE_PASSWORD: oauth
-      REDIS_HOST: redis
-      REDIS_PORT: 6379
-      DEFAULT_CLIENT_ID: web-pkce
-      DEFAULT_CLIENT_REDIRECT: http://localhost:8082/login/oauth2/code/generic
-      DEFAULT_CLIENT_POST_LOGOUT: http://localhost:8082/
-      DEFAULT_CLIENT_TENANT: acme
-      AUTH_ADMIN_USER: admin
-      AUTH_ADMIN_PASSWORD: admin123
-    depends_on:
-      postgres: { condition: service_healthy }
-      redis: { condition: service_healthy }
-    ports: ["9000:9000"]
     healthcheck:
-      test: ["CMD","bash","-lc","exec 3<>/dev/tcp/127.0.0.1/9000; echo -e 'GET /.well-known/openid-configuration HTTP/1.1\r\nHost: localhost\r\nConnection: close\r\n\r\n' >&3; grep -q 'issuer' <&3"]
-      interval: 10s
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
       timeout: 5s
-      retries: 30
+      retries: 10
 
-  resource-server:
-    build: { context: ., dockerfile: resource-server/Dockerfile }
-    environment:
-      REDIS_HOST: redis
-      REDIS_PORT: 6379
-      JWK_SET_URI: http://auth-server:9000/oauth2/jwks
-    depends_on:
-      auth-server: { condition: service_healthy }
-    ports: ["8081:8081"]
-
-  client-app:
-    build: { context: ., dockerfile: oauth2-client/Dockerfile }
-    environment:
-      OAUTH_ISSUER_URI: http://auth-server:9000
-      OAUTH_CLIENT_ID: web-pkce
-      RESOURCE_BASE_URI: http://resource-server:8081
-    depends_on:
-      auth-server: { condition: service_healthy }
-      resource-server: { condition: service_started }
-    ports: ["8082:8082"]
+volumes:
+  pgdata:

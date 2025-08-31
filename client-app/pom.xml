@@ -7,7 +7,7 @@
     <artifactId>custom-oauth2-starter</artifactId>
     <version>0.0.1-SNAPSHOT</version>
   </parent>
-  <artifactId>resource-server</artifactId>
+  <artifactId>client-app</artifactId>
 
   <dependencies>
     <dependency>
@@ -16,15 +16,15 @@
     </dependency>
     <dependency>
       <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-thymeleaf</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter-security</artifactId>
     </dependency>
     <dependency>
       <groupId>org.springframework.boot</groupId>
-      <artifactId>spring-boot-starter-oauth2-resource-server</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.springframework.boot</groupId>
-      <artifactId>spring-boot-starter-data-redis</artifactId>
+      <artifactId>spring-boot-starter-oauth2-client</artifactId>
     </dependency>
     <dependency>
       <groupId>org.springframework.boot</groupId>
