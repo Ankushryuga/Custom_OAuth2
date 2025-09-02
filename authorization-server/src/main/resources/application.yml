@@ -39,6 +39,8 @@ server:
   port: 9000
 
 spring:
+  application:
+    name: authorization-server
   datasource:
     url: jdbc:postgresql://localhost:5432/oauth_db
     username: postgres
@@ -50,6 +52,8 @@ spring:
     port: 6379
 
 auth:
+  ui:
+    default-success-url: "http://localhost:5173/" # <- Change per env without code.
   jwks:
     path: ./data/jwks.json
   token:
