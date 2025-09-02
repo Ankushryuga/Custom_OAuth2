@@ -31,11 +31,13 @@ java -jar client-app/target/client-app-0.0.1-SNAPSHOT.jar
 - Client App: http://localhost:8082
 
 **Steps to run:**
-1. Start the Authorization Server (verify `http://localhost:9000/oauth2/jwks` loads).
-2. Start the Resource Server.
-3. Start Client (Note: This is just dummy client for awareness).
-4. login with `http://localhost:8082`
-
+1. ```UI -> OAuthLoginRedirectUI -> npm i-> npm run build```
+2. ```cp -R dist/* ../authorization-server/src/main/resources/static/auth/login/```
+3. Start the Authorization Server (verify `http://localhost:9000/oauth2/jwks` loads).
+4. Start the Resource Server.
+5. Start Client (Note: This is just dummy client for awareness).
+6. login with `http://localhost:8082`
+7. ```UI->CustomOAuthUI->npm i->npm run dev```
 NOTE: I have added a dummy credential for normal user development: `username: user`, and `password: password`, for admin role `username: admin` and `password:admin123`.
 
 ## Client registration
