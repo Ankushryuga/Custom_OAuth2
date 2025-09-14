@@ -1,24 +1,6 @@
 server:
-  port: 9090
-
+  port: 8082
 spring:
-  redis:
-    host: localhost
-    port: 6379
-  security:
-    oauth2:
-      resourceserver:
-        jwt:
-          issuer-uri: http://localhost:9000
-
-management:
-  endpoints:
-    web:
-      exposure:
-        include: health,info
-# authorization-server/src/main/resources/application.yml
-auth:
-  dcr:
-    # set a dev token to require on Authorization: Bearer <token>
-    initial-token: "dev-dcr-token-123"
-    require-initial-token: true
+  security.oauth2.resourceserver.jwt.issuer-uri: ${ISSUER_BASE_URI:http://localhost:8080}
+rs.jwk-set-uri: ${RS_JWK_SET_URI:http://auth-server:8080/oauth2/jwks}
+cors.allowed-origins: http://localhost:5174
