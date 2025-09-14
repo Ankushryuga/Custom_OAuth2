@@ -1,0 +1,26 @@
+server:
+  port: 8080
+  forward-headers-strategy: ${SERVER_FORWARD_HEADERS:framework}
+
+spring:
+  datasource:
+    url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://localhost:5432/oauth_db}
+    username: ${SPRING_DATASOURCE_USERNAME:postgres}
+    password: ${SPRING_DATASOURCE_PASSWORD:postgres}
+  redis:
+    host: ${SPRING_REDIS_HOST:localhost}
+    port: ${SPRING_REDIS_PORT:6379}
+  flyway:
+    enabled: true
+
+auth:
+  dcr:
+    initial-token: ${AUTH_DCR_INITIAL_TOKEN:}
+    require-initial-token: ${AUTH_DCR_REQUIRE_INITIAL_TOKEN:true}
+  jwks:
+    dir: ./data/jwks
+logging:
+  level:
+    org.springframework.security: DEBUG
+    org.springframework.security.oauth2: DEBUG
+    org.springframework.jdbc.core: DEBUG

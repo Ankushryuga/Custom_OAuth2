@@ -1,30 +1,19 @@
 server:
-  port: 8082
-
+  port: 8081
 spring:
   security:
     oauth2:
       client:
-        provider:
-          auth-server:
-            issuer-uri: http://localhost:9000
         registration:
-          client-app:
-            provider: auth-server
-            client-id: client-app
-            client-secret: client-secret
+          generic:
+            client-id: ${CLIENT_ID:demo-client}
+            client-secret: ${CLIENT_SECRET:demo-secret}
             authorization-grant-type: authorization_code
-            redirect-uri: "{baseUrl}/login/oauth2/code/{registrationId}"
+            redirect-uri: "{baseUrl}/login/oauth2/code/generic"
             scope: openid,profile,email,api.read
-  servlet:
-    session:
-      tracking-modes: cookie
-      cookie:
-        name: JSESSIONID
-        http-only: true
-        same-site: lax
-        secure: false
-
-logging:
-  level:
-    org.springframework.security: DEBUG
+        provider:
+          generic:
+            authorization-uri: ${OAUTH_AUTH_URI:http://localhost:8080/oauth2/authorize}
+            token-uri: ${OAUTH_TOKEN_URI:http://auth-server:8080/oauth2/token}
+            jwk-set-uri: ${OAUTH_JWK_URI:http://auth-server:8080/oauth2/jwks}
+            user-info-uri: ${OAUTH_USERINFO_URI:http://auth-server:8080/userinfo}

@@ -1,0 +1,9 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root { color-scheme: dark; }
+.bg-grid { background-image: radial-gradient(circle at 1px 1px, rgba(255,255,255,0.08) 1px, transparent 0); background-size: 24px 24px; }
+.glass { @apply bg-white/10 backdrop-blur-xl border border-white/10; }
+.input { @apply w-full rounded-xl bg-white/5 border border-white/10 px-4 py-3 text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-primary-400; }
+.btn { @apply w-full rounded-xl bg-primary-600 hover:bg-primary-500 transition-colors text-white font-semibold px-4 py-3; }
