@@ -23,7 +23,11 @@
 FROM node:20-alpine AS ui
 WORKDIR /ui
 COPY login-ui/package.json login-ui/package-lock.json* ./
-RUN npm ci --silent || npm i --silent
+
+# Remove package-lock.json and node_modules
+RUN rm -rf login-ui/node_modules login-ui/package-lock.json
+RUN npm ci --include=dev
+# RUN npm ci --silent || npm i --silent
 COPY login-ui .
 RUN npm run build
 
