@@ -3,8 +3,12 @@
 ## Reporting a Vulnerability
 Please email the maintainers with a detailed report. We aim to acknowledge within 48 hours. Do not open public issues for sensitive findings.
 
-## Supported Versions
-We generally support the latest minor release; backport critical fixes case-by-case.
+## Informaiton:
+Some ```client-id``` or ```client-secret``` has been exposed as reference for use, but once you create your ```client-id``` or ```client-secret``` please don't commit these informations.
+Thank you
+
+~## Supported Versions~
+~We generally support the latest minor release; backport critical fixes case-by-case.~
 
 ## Guidelines
 - Never commit secrets or private keys.
