@@ -54,7 +54,7 @@ docker-compose.yml
 ---
 
 ## .env
-
+In case .env is missing then please add .env file with the following .env content in the root directory.
 Create/adjust **`.env`** at repo root:
 
 ```env

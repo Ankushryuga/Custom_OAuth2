@@ -356,7 +356,8 @@ function App() {
           {csrf ? (<input type="hidden" name={csrf.parameterName} value={csrf.token} />) : null}
 
           <button className="w-full rounded-lg bg-indigo-600 hover:bg-indigo-500 transition px-3 py-2"
-                  disabled={!csrf || loading}>
+                    disabled={loading}      // ⬅️ was: disabled={!csrf || loading}
+                  >
             {loading ? 'Signing in…' : 'Sign in'}
           </button>
         </form>
