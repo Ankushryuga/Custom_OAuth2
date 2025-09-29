@@ -1,6 +1,7 @@
 server:
   port: 8080
-  forward-headers-strategy: ${SERVER_FORWARD_HEADERS:framework}
+#  forward-headers-strategy: ${SERVER_FORWARD_HEADERS:framework}
+  forward-headers-strategy: none   # <-- IMPORTANT: stop deriving host/scheme from X-Forwarded-*
 
 spring:
   datasource:
@@ -12,6 +13,10 @@ spring:
     port: ${SPRING_REDIS_PORT:6379}
   flyway:
     enabled: true
+  security:
+    oauth2:
+      authorizationserver:
+        issuer: "http://10.201.240.154:8080"
 
 auth:
   dcr:
@@ -24,3 +29,6 @@ logging:
     org.springframework.security: DEBUG
     org.springframework.security.oauth2: DEBUG
     org.springframework.jdbc.core: DEBUG
+
+# application.yml
+AUTH_ISSUER_URI: http://10.201.240.154:8080
