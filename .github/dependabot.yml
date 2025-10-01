@@ -1,0 +1,46 @@
+version: 2
+updates:
+  # ---------- Maven (Java services) ----------
+  - package-ecosystem: "maven"
+    directory: "/auth-server"
+    schedule:
+      interval: "weekly"
+  - package-ecosystem: "maven"
+    directory: "/resource-server"
+    schedule:
+      interval: "weekly"
+  - package-ecosystem: "maven"
+    directory: "/client-app"
+    schedule:
+      interval: "weekly"
+
+  # ---------- npm (frontend apps) ----------
+  - package-ecosystem: "npm"
+    directory: "/client-ui"
+    schedule:
+      interval: "weekly"
+  - package-ecosystem: "npm"
+    directory: "/oauth-login-redirect-ui"
+    schedule:
+      interval: "weekly"
+  - package-ecosystem: "npm"
+    directory: "/auth-server-custom-sign-in"
+    schedule:
+      interval: "weekly"
+
+  # ---------- Docker base images ----------
+  - package-ecosystem: "docker"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+
+  # Optional: group Spring-related bumps to reduce PR noise (applies when scanning root POMs)
+  - package-ecosystem: "maven"
+    directory: "/"
+    schedule:
+      interval: "monthly"
+    groups:
+      spring-and-boot:
+        patterns:
+          - "org.springframework*"
+          - "org.springframework.boot*"
