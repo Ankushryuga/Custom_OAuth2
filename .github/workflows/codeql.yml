@@ -6,7 +6,7 @@ on:
   pull_request:
     branches: [ main ]
   schedule:
-    - cron: '0 6 * * 1' # weekly, Mondays 06:00 UTC
+    - cron: '0 6 * * 1'  # weekly
   workflow_dispatch:
 
 permissions:
@@ -15,24 +15,58 @@ permissions:
 
 jobs:
   analyze:
-    name: CodeQL Analyze
+    name: CodeQL Analyze • ${{ matrix.language }}
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
       matrix:
         language: [ 'java-kotlin', 'javascript-typescript' ]
+
     steps:
       - uses: actions/checkout@v4
+
+      # ---------- Java/Kotlin setup & explicit builds ----------
+      - name: Set up Temurin JDK 21
+        if: matrix.language == 'java-kotlin'
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+          cache: maven
 
       - name: Initialize CodeQL
         uses: github/codeql-action/init@v3
         with:
           languages: ${{ matrix.language }}
+          # You can add `queries: security-extended,security-and-quality` if you want more checks.
 
-      # For multi-module Maven and npm workspaces, autobuild usually suffices.
-      # If it ever fails, replace with explicit build steps for each subproject.
-      - name: Autobuild
-        uses: github/codeql-action/autobuild@v3
+      # Build EACH Maven service explicitly so CodeQL can extract
+      - name: Build auth-server
+        if: matrix.language == 'java-kotlin'
+        run: mvn -B -DskipTests package -f auth-server/pom.xml
+
+      - name: Build resource-server
+        if: matrix.language == 'java-kotlin'
+        run: mvn -B -DskipTests package -f resource-server/pom.xml
+
+      - name: Build client-app
+        if: matrix.language == 'java-kotlin'
+        run: mvn -B -DskipTests package -f client-app/pom.xml
+
+      # Optional: install JS deps before TS extraction (not strictly required, harmless if absent)
+      - name: Prep JS workspaces (best effort)
+        if: matrix.language == 'javascript-typescript'
+        run: |
+          set -e
+          for APP in client-ui oauth-login-redirect-ui auth-server-custom-sign-in; do
+            if [ -f "$APP/package.json" ]; then
+              echo "Installing for $APP"
+              (cd "$APP" && if [ -f pnpm-lock.yaml ]; then corepack enable && pnpm install --frozen-lockfile; \
+               elif [ -f yarn.lock ]; then corepack enable && yarn install --frozen-lockfile; \
+               elif [ -f package-lock.json ] || [ -f npm-shrinkwrap.json ]; then npm ci; \
+               else npm install; fi)
+            fi
+          done
 
       - name: Perform CodeQL Analysis
         uses: github/codeql-action/analyze@v3
