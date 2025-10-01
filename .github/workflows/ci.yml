@@ -10,8 +10,6 @@ on:
       - 'resource-server/**'
       - 'client-app/**'
       - 'client-ui/**'
-      - 'oauth-login-redirect-ui/**'
-      - 'auth-server-custom-sign-in/**'
       - 'docker-compose.yml'
       - '.github/workflows/**'
   pull_request:
@@ -23,8 +21,6 @@ on:
       - 'resource-server/**'
       - 'client-app/**'
       - 'client-ui/**'
-      - 'oauth-login-redirect-ui/**'
-      - 'auth-server-custom-sign-in/**'
       - 'docker-compose.yml'
       - '.github/workflows/**'
   workflow_dispatch:
@@ -83,7 +79,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        app: [ "client-ui", "oauth-login-redirect-ui", "auth-server-custom-sign-in" ]
+        app: [ "client-ui" ]  # removed auth-server-custom-sign-in
     steps:
       - uses: actions/checkout@v4
 
@@ -110,7 +106,6 @@ jobs:
             echo "lock=" >> $GITHUB_OUTPUT
           fi
 
-      # Use cache only if a lockfile exists for a known PM
       - name: Use Node.js 20 (with cache)
         if: steps.detect.outputs.mgr != 'none'
         uses: actions/setup-node@v4
@@ -351,24 +346,6 @@ jobs:
           tags: |
             ghcr.io/${{ steps.lc.outputs.owner_lc }}/sentinel-client-ui:latest
             ghcr.io/${{ steps.lc.outputs.owner_lc }}/sentinel-client-ui:${{ github.sha }}
-
-      - name: Build & push auth-server-custom-sign-in
-        uses: docker/build-push-action@v6
-        with:
-          context: ./auth-server-custom-sign-in
-          push: true
-          tags: |
-            ghcr.io/${{ steps.lc.outputs.owner_lc }}/sentinel-auth-server-login:latest
-            ghcr.io/${{ steps.lc.outputs.owner_lc }}/sentinel-auth-server-login:${{ github.sha }}
-
-      - name: Build & push oauth-login-redirect-ui
-        uses: docker/build-push-action@v6
-        with:
-          context: ./oauth-login-redirect-ui
-          push: true
-          tags: |
-            ghcr.io/${{ steps.lc.outputs.owner_lc }}/sentinel-login-redirect-ui:latest
-            ghcr.io/${{ steps.lc.outputs.owner_lc }}/sentinel-login-redirect-ui:${{ github.sha }}
 
   # ---------- Meta gate ----------
   all-green:
