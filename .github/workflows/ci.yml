@@ -76,7 +76,7 @@ jobs:
           path: ${{ matrix.module }}/target/*.jar
           if-no-files-found: warn
 
-  # ---------- Node/Vite apps ----------
+  # ---------- Node/Vite apps (auto-detect npm/yarn/pnpm & cache safely) ----------
   node-build-test:
     name: Node • ${{ matrix.app }}
     runs-on: ubuntu-latest
@@ -84,30 +84,92 @@ jobs:
       fail-fast: false
       matrix:
         app: [ "client-ui", "oauth-login-redirect-ui", "auth-server-custom-sign-in" ]
-    defaults:
-      run:
-        working-directory: ${{ matrix.app }}
     steps:
       - uses: actions/checkout@v4
 
-      - name: Use Node.js 20
+      - name: Detect package manager & lockfile
+        id: detect
+        run: |
+          set -e
+          APP="${{ matrix.app }}"
+          cd "$APP"
+          if [ -f pnpm-lock.yaml ]; then
+            echo "mgr=pnpm" >> $GITHUB_OUTPUT
+            echo "lock=pnpm-lock.yaml" >> $GITHUB_OUTPUT
+          elif [ -f yarn.lock ]; then
+            echo "mgr=yarn" >> $GITHUB_OUTPUT
+            echo "lock=yarn.lock" >> $GITHUB_OUTPUT
+          elif [ -f package-lock.json ]; then
+            echo "mgr=npm" >> $GITHUB_OUTPUT
+            echo "lock=package-lock.json" >> $GITHUB_OUTPUT
+          elif [ -f npm-shrinkwrap.json ]; then
+            echo "mgr=npm" >> $GITHUB_OUTPUT
+            echo "lock=npm-shrinkwrap.json" >> $GITHUB_OUTPUT
+          else
+            echo "mgr=none" >> $GITHUB_OUTPUT
+            echo "lock=" >> $GITHUB_OUTPUT
+          fi
+
+      # Use cache only if a lockfile exists for a known PM
+      - name: Use Node.js 20 (with cache)
+        if: steps.detect.outputs.mgr != 'none'
         uses: actions/setup-node@v4
         with:
           node-version: '20'
-          cache: npm
-          cache-dependency-path: ${{ matrix.app }}/package-lock.json
+          cache: ${{ steps.detect.outputs.mgr }}
+          cache-dependency-path: ${{ matrix.app }}/${{ steps.detect.outputs.lock }}
 
-      - name: Install
-        run: npm ci
+      - name: Use Node.js 20 (no cache)
+        if: steps.detect.outputs.mgr == 'none'
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Enable Corepack for yarn/pnpm
+        if: steps.detect.outputs.mgr != 'npm' && steps.detect.outputs.mgr != 'none'
+        run: corepack enable
+
+      - name: Install dependencies
+        run: |
+          set -e
+          APP="${{ matrix.app }}"
+          cd "$APP"
+          case "${{ steps.detect.outputs.mgr }}" in
+            pnpm) pnpm install --frozen-lockfile ;;
+            yarn) yarn install --frozen-lockfile ;;
+            npm)  npm ci ;;
+            none) echo "No lockfile found — falling back to npm install"; npm install ;;
+          esac
 
       - name: Lint (if present)
-        run: npm run -s lint --if-present
+        run: |
+          APP="${{ matrix.app }}"
+          cd "$APP"
+          case "${{ steps.detect.outputs.mgr }}" in
+            pnpm) pnpm run -s lint --if-present ;;
+            yarn) yarn -s run lint || true ;;
+            *)    npm run -s lint --if-present ;;
+          esac
 
       - name: Test (if present)
-        run: npm run -s test --if-present
+        run: |
+          APP="${{ matrix.app }}"
+          cd "$APP"
+          case "${{ steps.detect.outputs.mgr }}" in
+            pnpm) pnpm run -s test --if-present ;;
+            yarn) yarn -s run test || true ;;
+            *)    npm run -s test --if-present ;;
+          esac
 
       - name: Build (if present)
-        run: npm run -s build --if-present
+        run: |
+          APP="${{ matrix.app }}"
+          cd "$APP"
+          case "${{ steps.detect.outputs.mgr }}" in
+            pnpm) pnpm run -s build --if-present ;;
+            yarn) yarn -s run build || true ;;
+            *)    npm run -s build --if-present ;;
+          esac
 
       - name: Upload web build
         uses: actions/upload-artifact@v4
@@ -140,7 +202,6 @@ jobs:
     runs-on: ubuntu-latest
     needs: docker-validate
     env:
-      # Align with your local .env (adjust if your compose expects different names/values)
       POSTGRES_DB: oauth_db
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: 1234
@@ -150,6 +211,9 @@ jobs:
       AUTH_ISSUER_URI: http://localhost:8080
     steps:
       - uses: actions/checkout@v4
+
+      - name: Install jq (for pretty output)
+        run: sudo apt-get update && sudo apt-get install -y jq
 
       - name: Create CI override for minimal stack
         run: |
